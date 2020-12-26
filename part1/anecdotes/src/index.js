@@ -14,21 +14,25 @@ const Anecdote = (props) => {
   );
 };
 
+const MostVotes = (props) => {
+  return (
+    <>
+      <h1>The Anecdote with Most Votes Is...</h1>
+      {!props.hasVotes && <>No votes yet.</>}
+      {props.hasVotes && (
+        <Anecdote anecdote={props.anecdote} votes={props.votes} />
+      )}
+    </>
+  );
+};
+
 const App = (props) => {
   const [selected, setSelected] = useState(0);
   const [votes, setVotes] = useState(new Array(props.anecdotes.length).fill(0));
-  // const [hasVotes, setHasVotes] = useState(false);
-
-  const handleNextClick = () => {
-    setSelected(randomNewAnecdote)
-  };
-
-  const handleVoteClick = () => {
-    setVotes(votes + 1)
-  };
+  const [hasVotes, setHasVotes] = useState(false);
 
   const anecdoteId = (length) => {
-    return anecdotes[Math.floor(Math.random() * anecdotes.length)]
+    return Math.floor(Math.random() * length)
   };
 
   const randomNewAnecdote = () => {
@@ -40,13 +44,53 @@ const App = (props) => {
     setSelected(randId);
   };
 
+  const handleVote = () => {
+    const newVotes = [...votes];
+    newVotes[selected] += 1;
+    setVotes(newVotes);
+    setHasVotes(true);
+  };
+
+  const handleClick = (expr) => {
+    switch (expr) {
+      case "next":
+        randomNewAnecdote();
+        break;
+      case "vote":
+        handleVote();
+        break;
+      default:
+        break;
+    }
+  };
+
+  const maxVote = votes.reduce(
+    (count, num, index) => {
+      if (num > count.num) {
+        count.num = num;
+        count.index = index;
+      }
+
+      return count;
+    },
+    { num: 0 }
+  );
+
+  const anecdoteMostVoted = anecdotes[maxVote.index];
+
+
   return (
     <div>
       <h1>Anecdote Generator</h1>
       <Anecdote anecdote={anecdotes[selected]} votes={votes[selected]} />
       <br />
-      <Button text="Next Anecdote" onClick={() => handleNextClick()} />
-      <Button text="Vote" onClick={() => handleVoteClick()} />
+      <Button text="Vote" onClick={() => handleClick("vote")} />
+      <Button text="Next Anecdote" onClick={() => handleClick("next")} />
+      <MostVotes
+        hasVotes={hasVotes}
+        anecdote={anecdoteMostVoted}
+        votes={maxVote.num}
+      />
     </div>
   )
 };
@@ -61,6 +105,6 @@ const anecdotes = [
 ];
 
 
-ReactDOM.render(<App anecdotes={anecdotes}/>,
+ReactDOM.render(<App anecdotes={anecdotes} />,
   document.getElementById('root')
 );
