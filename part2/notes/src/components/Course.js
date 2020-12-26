@@ -2,7 +2,7 @@ import React from 'react'
 
 const Header = (props) => {
   return (
-    <h1>{props.name}</h1>
+    <h2>{props.name}</h2>
   )
 };
 
@@ -23,6 +23,7 @@ const Part = (props) => {
 
 const Content = ({ parts }) => {
   const conPart = parts.map((part) => {
+    console.log(part);
     return <Part key={part.id} name={part.name} exercises={part.exercises} />
   })
   const noParts = !Array.isArray(conPart) || !conPart.length;
