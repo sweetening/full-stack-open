@@ -1,45 +1,89 @@
 import React, { useState } from 'react';
-import Name from ./components/Name;
+import Person from './components/Person'
 
 const App = () => {
-  const [ persons, setPersons ] = useState([]);
-  const [ newName, setNewName ] = useState('');
+  const [persons, setPersons] = useState([
+    { name: 'Queen Elizabeth', number: '176-7342999' },
+    { name: 'Charlotte', number: '123-4567888' },
+    { name: 'Mummo', number: '123-4567889' },
+    { name: 'Anthony', number: '123-4567880' },
+  ])
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [showAll, setShowAll] = useState(true)
+  const [filterBy, setFilterBy] = useState('');
 
+  const personsToShow = showAll ? persons : persons.filter(person => person.name.toLowerCase().search(filterBy) !== -1)
 
-  const addNameHandler = (event) => {
+  const rows = () => personsToShow.map(person =>
+    <Person
+      key={person.name}
+      name={person.name}
+      number={person.number}
+    />
+  )
+
+  const handlePersonNameChange = (event) => setNewName(event.target.value);
+
+  const handlePersonNumberChange = (event) => {
+    setNewNumber(event.target.value)
+  }
+
+  const handleFiltering = (event) => {
+    setFilterBy(event.target.value)
+    setShowAll(false)
+    console.log(filterBy);
+  }
+
+  const addPerson = (event) => {
     event.preventDefault()
-    // let newPerson = { ...persons };
-    // const newArr = persons.concat(newPerson);
-    setNewName(event.target)
-  };
+    //
+    if (newName === '') return true
+    if (newNumber === '') return true
 
-  const handleNameChange = (event) => {
-    console.log(event.target.value)
-    setPersons(event.target.value)
-  };
+    let dup = false
+    persons.forEach(p => {
+      if (p.name === newName) dup = true
+    })
+
+    if (!dup) {
+      const personObject = {
+        name: newName,
+        number: newNumber
+      }
+
+      setPersons(persons.concat(personObject))
+      setNewName('')
+      setNewNumber('')
+    }
+  }
 
   return (
     <div>
-      <h2>Phonebook</h2>
-      <form onSubmit={addNameHandler}>
+      <h1>Phonebook</h1>
+      <form onSubmit={addPerson}>
         <div>
-          name: <input
-            value={newName}
-            onChange={handleNameChange} />
+          Filter:<input value={filterBy} onChange={handleFiltering} />
         </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
+        <h2>Add a new</h2>
+        Name: <input
+          value={newName}
+          onChange={handlePersonNameChange}
+        />
+        <br />
+        Number: <input
+          value={newNumber}
+          onChange={handlePersonNumberChange}
+        />
+        <br />
+        <button type="submit">save</button>
       </form>
       <h2>Numbers</h2>
       <ul>
-        {names.map(person =>
-          <Name key={person.id} name={name} />
-        )}
+        {rows()}
       </ul>
-      <div>debug: {newName}</div>
     </div>
   )
-};
+}
 
 export default App;
