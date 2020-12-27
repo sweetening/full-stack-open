@@ -1,24 +1,27 @@
 import React, { useState } from 'react';
+import Name from ./components/Name;
 
 const App = () => {
-  const [person, setPerson] = useState([
-    { name: 'Arto Hellas' }
-  ]);
-  const [newName, setNewName] = useState('');
-  const addName = (event) => {
+  const [ persons, setPersons ] = useState([]);
+  const [ newName, setNewName ] = useState('');
+
+
+  const addNameHandler = (event) => {
     event.preventDefault()
-    console.log('button clicked', event.target)
+    // let newPerson = { ...persons };
+    // const newArr = persons.concat(newPerson);
+    setNewName(event.target)
   };
 
   const handleNameChange = (event) => {
     console.log(event.target.value)
-    setNewName(event.target.value)
+    setPersons(event.target.value)
   };
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={addName}>
+      <form onSubmit={addNameHandler}>
         <div>
           name: <input
             value={newName}
@@ -29,7 +32,11 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      ...
+      <ul>
+        {names.map(person =>
+          <Name key={person.id} name={name} />
+        )}
+      </ul>
       <div>debug: {newName}</div>
     </div>
   )
