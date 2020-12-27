@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Person from './components/Person'
+import Person from './components/Person';
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -7,56 +7,52 @@ const App = () => {
     { name: 'Charlotte', number: '123-4567888' },
     { name: 'Mummo', number: '123-4567889' },
     { name: 'Anthony', number: '123-4567880' },
-  ])
-  const [newName, setNewName] = useState('')
-  const [newNumber, setNewNumber] = useState('')
-  const [showAll, setShowAll] = useState(true)
+  ]);
+  const [newName, setNewName] = useState('');
+  const [newNumber, setNewNumber] = useState('');
+  const [showAll, setShowAll] = useState(true);
   const [filterBy, setFilterBy] = useState('');
 
-  const personsToShow = showAll ? persons : persons.filter(person => person.name.toLowerCase().search(filterBy) !== -1)
+  const personsToShow = showAll ? persons : persons.filter(person => person.name.toLowerCase().search(filterBy) !== -1);
 
-  const rows = () => personsToShow.map(person =>
+  const showNumbers = () => personsToShow.map(person =>
     <Person
       key={person.name}
       name={person.name}
       number={person.number}
     />
-  )
+  );
 
   const handlePersonNameChange = (event) => setNewName(event.target.value);
 
-  const handlePersonNumberChange = (event) => {
-    setNewNumber(event.target.value)
-  }
+  const handlePersonNumberChange = (event) => setNewNumber(event.target.value);
 
   const handleFiltering = (event) => {
     setFilterBy(event.target.value)
     setShowAll(false)
-    console.log(filterBy);
-  }
+  };
 
   const addPerson = (event) => {
-    event.preventDefault()
-    //
-    if (newName === '') return true
-    if (newNumber === '') return true
+    event.preventDefault();
+    if (newName === '') return true;
+    if (newNumber === '') return true;
 
-    let dup = false
+    let duplicate = false
     persons.forEach(p => {
-      if (p.name === newName) dup = true
-    })
+      if (p.name === newName) duplicate = true
+    });
 
-    if (!dup) {
-      const personObject = {
+    if (!duplicate) {
+      const personObj = {
         name: newName,
         number: newNumber
-      }
+      };
 
-      setPersons(persons.concat(personObject))
+      setPersons(persons.concat(personObj))
       setNewName('')
       setNewNumber('')
-    }
-  }
+    };
+  };
 
   return (
     <div>
@@ -80,10 +76,10 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       <ul>
-        {rows()}
+        {showNumbers()}
       </ul>
     </div>
   )
-}
+};
 
 export default App;
