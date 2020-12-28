@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 const Person = ({ name, number }) => {
   return (
@@ -7,6 +7,6 @@ const Person = ({ name, number }) => {
       <br />
     </div>
   )
-}
+};
 
-export default Person
+export default Person;
