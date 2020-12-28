@@ -23,7 +23,6 @@ const Part = (props) => {
 
 const Content = ({ parts }) => {
   const conPart = parts.map((part) => {
-    console.log(part);
     return <Part key={part.id} name={part.name} exercises={part.exercises} />
   })
   const noParts = !Array.isArray(conPart) || !conPart.length;
