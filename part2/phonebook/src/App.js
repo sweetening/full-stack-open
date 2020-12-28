@@ -3,26 +3,21 @@ import Person from './components/Person';
 import axios from 'axios';
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Queen Elizabeth', number: '176-7342999' },
-    { name: 'Charlotte', number: '123-4567888' },
-    { name: 'Mummo', number: '123-4567889' },
-    { name: 'Anthony', number: '123-4567880' },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [showAll, setShowAll] = useState(true);
   const [filterBy, setFilterBy] = useState('');
 
   useEffect(() => {
-    console.log('effect')
+    console.log('render')
     axios
       .get('http://localhost:3001/persons')
       .then(response => {
         console.log('promise fulfilled')
         setPersons(response.data)
       })
-  }, [])
+  }, []);
 
   const personsToShow = showAll ? persons : persons.filter(person => person.name.toLowerCase().search(filterBy) !== -1);
 
