@@ -1,11 +1,16 @@
 import React from "react";
 
-const Filter = (props) => {
+const Filter = ({ value, onChange }) => {
   return (
-    <div>
-      <label>Search by name: </label>
-      <input onChange={props.onChange} value={props.value}></input>
-    </div>
+    <>
+      Find countries:
+      <input
+        type="text"
+        id="filter"
+        value={value}
+        onChange={onChange}
+      />
+    </>
   );
 };
 

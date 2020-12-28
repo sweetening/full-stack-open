@@ -1,30 +1,28 @@
 import React from "react";
 import Country from "./Country";
 
-const Countries = ({ countries, handleClick }) => {
-  const tooMany = countries.length > 10;
-  const many = countries.length > 1 && countries.length <= 10;
-  const one = countries.length === 1;
-  const arr = Array.from(countries);
+const Countries = ({ countries, onClick }) => {
+  const outcome = () => {
+    if (countries.length > 10) {
+      return <p>Too many matches, specify another filter</p>
+    }
+    else if (countries.length === 1) {
+      return <Country country={countries[0]} />
+    };
 
-  const allCountries = arr.map((country) => {
-    return (
-      <div key={country.alpha3Code}>
-        {country.name}{" "}
-        <button onClick={handleClick} id={country.name}>
-          Show
-        </button>
-      </div>
-    );
-  });
+    const showCountry = countries.map((country, c) =>
+      <li key={country.numericCode}>
+        {country.name} <button onClick={() => onClick(c)}>show</button>
+      </li>
+    )
+    return <ul>{showCountry}</ul>
+  }
 
   return (
-    <div>
-      {tooMany && "Too many matches, specify another filter"}
-      {many && <div>{allCountries}</div>}
-      {one && <Country country={countries[0]} />}
-    </div>
-  );
-};
+    <>
+      {outcome()}
+    </>
+  )
+}
 
 export default Countries;
