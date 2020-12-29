@@ -1,7 +1,7 @@
 import React from 'react';
 import Person from './Person';
 
-const Persons = ({ persons, removePerson }) => {
+const Persons = ({ persons, remove }) => {
   const showPersons = () => {
     return persons?.map(person =>
       <li key={Math.random()}>
@@ -10,7 +10,7 @@ const Persons = ({ persons, removePerson }) => {
           person={person.name}
           number={person.number}
         />
-        <button onClick={() => removePerson(person.id, person.name, person.number)}>
+        <button onClick={() => delete(person.id, person.name, person.number)}>
           delete
         </button>
       </li>
