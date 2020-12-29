@@ -11,21 +11,19 @@ const App = () => {
   const [ filterBy, setFilterBy ] = useState('');
   const [ errorMessage, setErrorMessage ] = useState();
 
-  const showNotification = (content, color = 'ff0000') => {
+  const showNotification = (content, color = "ff0000") => {
     setErrorMessage({ content, color });
     setTimeout(() => {
       setErrorMessage({ content: null });
     }, 5000);
   };
 
-  const handleAdd = (event) => {
+  const handleAddPerson = (event) => {
     const newPerson = { newName, newNumber };
     const existingPerson = persons.filter(
       (person) => person.name === newPerson.name
     );
-
     event.preventDefault();
-
     if (existingPerson.length > 0) {
       if (
         window.confirm(
@@ -95,18 +93,16 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook 2.0</h1>
-      <hr />
       <Notification message={errorMessage} />
       <div>
         Filter:<input value={filterBy} onChange={handleFilter} />
       </div>
-
       <h2>Add a new:</h2>
       <Form
-        handleAdd={handleAdd}
-        handleAddPersonNameInput={newName}
+        handleAddPerson={handleAddPerson}
+        handleAddName={newName}
         handleAddNameChange={handleAddNameChange}
-        handleAddPersonNumberInput={newNumber}
+        handleAddNumber={newNumber}
         handleAddNumberChange={handleAddNumberChange}
       />
       <h2>Numbers</h2>

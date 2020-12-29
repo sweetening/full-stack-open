@@ -1,19 +1,18 @@
 import React from 'react';
 import Person from './Person';
 
-const Persons = ({ persons, remove }) => {
+const Persons = ({ persons, handleDelete }) => {
   const showPersons = () => {
     return persons?.map(person =>
-      <li key={Math.random()}>
+      <ul>
         <Person
-          key={Person.name}
           person={person.name}
           number={person.number}
         />
-        <button onClick={() => delete(person.id, person.name, person.number)}>
+        <button onClick={() => handleDelete(person.id, person.name, person.number)}>
           delete
         </button>
-      </li>
+      </ul>
     )
   };
 
