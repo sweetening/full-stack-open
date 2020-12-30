@@ -9,76 +9,63 @@ const App = () => {
   const [ newName, setNewName ] = useState('');
   const [ newNumber, setNewNumber ] = useState('');
   const [ filterBy, setFilterBy ] = useState('');
-  const [ errorMessage, setErrorMessage ] = useState();
+  const [ errorMessage, setErrorMessage ] = useState(null);
 
   const showNotification = (content, color = "ff0000") => {
-    setErrorMessage({ content, color });
+    setErrorMessage(content, color);
     setTimeout(() => {
-      setErrorMessage({ content: null });
+      setErrorMessage("nope");
     }, 5000);
   };
 
   const handleAddPerson = (event) => {
-    const newPerson = { newName, newNumber };
-    const existingPerson = persons.filter(
-      (person) => person.name === newPerson.name
-    );
     event.preventDefault();
-    if (existingPerson.length > 0) {
-      if (
-        window.confirm(
-          `${existingPerson[0].name} is already added to the phonebook, would you like to update their contact number?`
-        )
-      ) {
-        directoryService
-          .update(existingPerson[0].id, newPerson)
-          .then((returnedPerson) => {
-            setPersons(
-              persons.map((person) =>
-                person.id !== returnedPerson.id ? person : returnedPerson
-              )
-            );
-            setNewName('');
-            setNewNumber('');
-            showNotification(`Updated ${returnedPerson.name}`);
-          })
-          .catch(() => {
-            showNotification(
-              `Error: ${existingPerson[0].name} already deleted`,
-              'red'
-            );
-            setPersons(
-              persons.filter((person) => person.id !== existingPerson[0].id)
-            );
-          });
-      }
+
+    const existing = persons.find(p => p.name === newName);
+    if (existing) {
+      const ok = window.confirm(`${existing.name} already in phonebook, replace the old number with new one?`);
+      if (ok) {
+        directoryService.update(existing.id, {
+          name: existing.name,
+          number: newNumber
+        }).then(returnedPerson => {
+          setPersons(persons.map(person => person.id !== existing.id ? person : returnedPerson));
+          showNotification(`Changed number of  ${existing.name}`);
+          setNewName('');
+          setNewNumber('');
+        })
+      };
+
     } else {
-      directoryService.create(newPerson).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson));
+      directoryService.create({
+        name: newName,
+        number: newNumber
+      }).then(addedPerson => {
+        setPersons(persons.concat(addedPerson));
+        showNotification(`Added ${newName}`);
         setNewName('');
         setNewNumber('');
-        showNotification(`Added ${returnedPerson.name}`);
-      });
+      }).catch(error => {
+        console.log(error.response.data.error);
+        showNotification(`${error.response.data.error} `, 'errorMessage');
+      })
     }
   };
 
   const handleAddNameChange = (event) => setNewName(event.target.value);
-
-  const handleAddNumberChange = (event) =>
-    setNewNumber(event.target.value);
-
+  const handleAddNumberChange = (event) => setNewNumber(event.target.value);
   const handleFilter = (event) => setFilterBy(event.target.value);
 
-  const handleDelete = (id, nameTBD) => {
-    if (window.confirm(`Delete ${nameTBD}?`)) {
+  const handleDelete = (id, deletion) => {
+    if (window.confirm(`Delete ${deletion}?`)) {
       directoryService
         .remove(id)
         .then(() => {
           setPersons(persons.filter((person) => person.id !== id));
-          showNotification(`Deleted ${nameTBD}`);
+          showNotification(`Deleted ${deletion}`);
         })
         .catch(() => {
-          showNotification(`Error: ${nameTBD} already deleted`, 'red');
+          showNotification(`Error: ${deletion} already deleted`, 'red');
           setPersons(persons.filter((person) => person.id !== id));
         });
     }
@@ -90,6 +77,10 @@ const App = () => {
       .then((initialPersons) => setPersons(initialPersons));
   }, []);
 
+  const personsToShow = filterBy.length === 0 ?
+    persons :
+    persons.filter(p => p.name.toLowerCase().indexOf(filterBy.toLowerCase()) > 0 )
+
   return (
     <div>
       <h1>Phonebook 2.0</h1>
@@ -99,16 +90,15 @@ const App = () => {
       </div>
       <h2>Add a new:</h2>
       <Form
-        handleAddPerson={handleAddPerson}
-        handleAddName={newName}
         handleAddNameChange={handleAddNameChange}
-        handleAddNumber={newNumber}
         handleAddNumberChange={handleAddNumberChange}
+        handleAddName={newName}
+        handleAddNumber={newNumber}
+        handleAddPerson={handleAddPerson}
       />
       <h2>Numbers</h2>
       <Persons
-        persons={persons}
-        filter={filterBy}
+        persons={personsToShow}
         handleDelete={handleDelete}
       />
     </div>

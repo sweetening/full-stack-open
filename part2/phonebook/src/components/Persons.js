@@ -3,16 +3,18 @@ import Person from './Person';
 
 const Persons = ({ persons, handleDelete }) => {
   const showPersons = () => {
-    return persons?.map(person =>
-      <ul>
+    return persons.map(p =>
+      <div>
         <Person
-          person={person.name}
-          number={person.number}
+          key={p.name}
+          name={p.name}
+          number={p.number}
         />
-        <button onClick={() => handleDelete(person.id, person.name, person.number)}>
+        <button onClick={() => handleDelete(p.id, p.name, p.number)}>
           delete
         </button>
-      </ul>
+        <br />
+      </div>
     )
   };
 

@@ -1,11 +1,9 @@
 import React from 'react';
 
-const Person = ({ name, number }) => {
+const Person = ({ id, name, number }) => {
   return (
     <div>
-      <li>{name}</li>
-      <li>{number}</li>
-      <br />
+      <li>{name}: {number}</li>
     </div>
   )
 };
