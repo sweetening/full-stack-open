@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Persons from './components/Persons';
 import Notification from './components/Notification';
 import Form from './components/Form';
+import Filter from './components/Filter';
 import directoryService from './services/directory';
 
 const App = () => {
@@ -9,30 +10,35 @@ const App = () => {
   const [ newName, setNewName ] = useState('');
   const [ newNumber, setNewNumber ] = useState('');
   const [ filterBy, setFilterBy ] = useState('');
-  const [ errorMessage, setErrorMessage ] = useState(null);
+  const [ notification, setNotification ] = useState(null);
 
-  const showNotification = (content, color = "ff0000") => {
-    setErrorMessage(content, color);
+  const showNotification = (content, type='green') => {
+    setNotification({ content, type });
     setTimeout(() => {
-      setErrorMessage("nope");
+      setNotification(null);
     }, 5000);
   };
 
-  const handleAddPerson = (event) => {
-    event.preventDefault();
+  const handleAddNameChange = (event) => setNewName(event.target.value);
+  const handleAddNumberChange = (event) => setNewNumber(event.target.value);
+  const handleFilterChange = (event) => setFilterBy(event.target.value);
 
-    const existing = persons.find(p => p.name === newName);
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log(newName, newNumber);
+    const existing = persons.find(p => p.name === newName)
     if (existing) {
       const ok = window.confirm(`${existing.name} already in phonebook, replace the old number with new one?`);
+      console.log(existing);
       if (ok) {
         directoryService.update(existing.id, {
           name: existing.name,
           number: newNumber
-        }).then(returnedPerson => {
-          setPersons(persons.map(person => person.id !== existing.id ? person : returnedPerson));
+        }).then(returned => {
+          setPersons(persons.map(person => person.id !== existing.id ? person : returned));
           showNotification(`Changed number of  ${existing.name}`);
-          setNewName('');
-          setNewNumber('');
+          setNewName();
+          setNewNumber();
         })
       };
 
@@ -40,23 +46,20 @@ const App = () => {
       directoryService.create({
         name: newName,
         number: newNumber
-      }).then(addedPerson => {
-        setPersons(persons.concat(addedPerson));
+      }).then(added => {
+        setPersons(persons.concat(added));
         showNotification(`Added ${newName}`);
         setNewName('');
         setNewNumber('');
       }).catch(error => {
         console.log(error.response.data.error);
-        showNotification(`${error.response.data.error} `, 'errorMessage');
+        showNotification(`${error.response.data.error} `, 'red');
       })
     }
   };
 
-  const handleAddNameChange = (event) => setNewName(event.target.value);
-  const handleAddNumberChange = (event) => setNewNumber(event.target.value);
-  const handleFilter = (event) => setFilterBy(event.target.value);
-
-  const handleDelete = (id, deletion) => {
+  const handleDelete = (id) => {
+    const deletion = persons.find(p => p.id === id)
     if (window.confirm(`Delete ${deletion}?`)) {
       directoryService
         .remove(id)
@@ -74,7 +77,7 @@ const App = () => {
   useEffect(() => {
     directoryService
       .getAll()
-      .then((initialPersons) => setPersons(initialPersons));
+      .then((bobby) => setPersons(bobby));
   }, []);
 
   const personsToShow = filterBy.length === 0 ?
@@ -84,9 +87,12 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook 2.0</h1>
-      <Notification message={errorMessage} />
+      <Notification notification={notification} />
       <div>
-        Filter:<input value={filterBy} onChange={handleFilter} />
+        <Filter
+          value={filterBy}
+          onChange={handleFilterChange}
+        />
       </div>
       <h2>Add a new:</h2>
       <Form
@@ -94,7 +100,7 @@ const App = () => {
         handleAddNumberChange={handleAddNumberChange}
         handleAddName={newName}
         handleAddNumber={newNumber}
-        handleAddPerson={handleAddPerson}
+        handleSubmit={handleSubmit}
       />
       <h2>Numbers</h2>
       <Persons

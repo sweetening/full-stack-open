@@ -1,28 +1,29 @@
 import React from "react";
 
-const Form = (props) => {
+const Form = ({ handleAddNameChange, handleAddNumberChange, newName, newNumber, handleSubmit }) => {
 
   return (
-    <form onSubmit={props.handleAddPerson}>
+    <form onSubmit={handleSubmit}>
       <div>
         name:
         <input
-          value={props.newName}
-          onChange={props.handleNameChange}
+          value={newName}
+          onChange={handleAddNameChange}
         />
       </div>
+      <br />
       <div>
         number:
         <input
-          value={props.newNumber}
-          onChange={props.handleNumberChange}
+          value={newNumber}
+          onChange={handleAddNumberChange}
         />
       </div>
       <div>
-        <button type="submit">add</button>
+        <button type="submit">add person</button>
       </div>
     </form>
   )
-}
+};
 
 export default Form;
