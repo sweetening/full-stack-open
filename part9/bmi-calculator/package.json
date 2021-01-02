@@ -1,0 +1,25 @@
+{
+  "name": "bmi-calculator",
+  "version": "1.0.0",
+  "description": "ex.9.1-9.3",
+  "main": "index.js",
+  "scripts": {
+    "ts-node": "ts-node",
+    "calculateBmi": "ts-node calculateBmi.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "full-stack-open"
+  },
+  "keywords": [
+    "typescript"
+  ],
+  "author": "sweetening",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^14.14.19",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3"
+  }
+}
