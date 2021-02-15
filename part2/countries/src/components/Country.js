@@ -23,7 +23,7 @@ const Country = ({ country }) => {
   };
 
   const weatherForecast = () => {
-    if (!weather) return <p>No information can be displayed</p>
+    if (!weather) return <p>We're sorry, no information can be displayed at this time.</p>
 
     const { temperature, weather_icons, wind_speed, wind_dir } = weather.current
     return (
@@ -33,11 +33,11 @@ const Country = ({ country }) => {
         </p>
         {
           weather_icons.map((icon, index) =>
-            <img key={index} src={icon} alt='weather' />
+            <img key={index} src={icon} width="30px" borderRadius="4px" alt='weather forecast' />
           )
         }
         <p>
-          <b>Wind: </b>{wind_speed} mph direction {wind_dir}
+          <b>Wind: </b>{wind_speed} kph, direction: {wind_dir}
         </p>
       </>
     );
@@ -45,13 +45,15 @@ const Country = ({ country }) => {
 
   return (
     <>
-      <h1>{name}</h1>
-      <p>Capital: {capital}</p>
-      <p>Population {numberWithCommas(population)}</p>
-      <h2>Languages:</h2>
-      <ul>{languageList()}</ul>
-      <img src={flag} width="200px" alt='flag' />
-      <h2>Weather in {capital}</h2>{weatherForecast()}
+      <div className="container">
+        <h1>✨ {name} ✨</h1>
+        <p><strong>Capital: </strong>{capital}</p>
+        <p><strong>Population: </strong>{numberWithCommas(population)}</p>
+        <h3>Languages spoken in {name}:</h3>
+        <p>{languageList()}</p>
+        <img src={flag} width="200px" alt='country flag' />
+        <h3>Weather in {capital}:</h3>{weatherForecast()}
+      </div>
     </>
   );
 };
